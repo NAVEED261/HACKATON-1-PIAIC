@@ -1,0 +1,9 @@
+fastapi==0.122.0
+uvicorn==0.38.0
+openai
+qdrant-client
+asyncpg
+sqlalchemy
+alembic
+passlib[bcrypt]
+python-jose[cryptography]

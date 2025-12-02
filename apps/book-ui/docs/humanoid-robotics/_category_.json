@@ -1,0 +1,8 @@
+{
+  "label": "Humanoid Robotics",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Study of Humanoid Robots"
+  }
+}
