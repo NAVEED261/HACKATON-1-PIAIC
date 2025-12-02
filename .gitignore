@@ -1,0 +1,22 @@
+# General
+.DS_Store
+.env
+
+# Node
+node_modules
+build
+dist
+
+# Python
+__pycache__/
+.pytest_cache/
+venv/
+*.pyc
+*.egg-info/
+
+# Docusaurus specific
+apps/book-ui/build/
+apps/book-ui/.docusaurus/
+
+# FastAPI specific
+apps/backend/__pycache__/

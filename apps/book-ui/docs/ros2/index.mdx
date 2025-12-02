@@ -1,0 +1,29 @@
+import React, { useState } from 'react';
+import ChatbotWidget from '@site/src/components/ChatbotWidget';
+import ChapterActions from '@site/src/components/ChapterActions';
+
+const initialChapterContent = `
+# ROS 2
+
+This section covers the Robot Operating System 2.
+
+ROS 2 (Robot Operating System 2) is a set of software libraries and tools that help you build robot applications. From drivers to state-of-the-art algorithms, and with powerful developer tools, ROS has everything you need for your next robotics project. ROS 2 is the successor to ROS 1, incorporating improvements for real-time control, multi-robot systems, and more robust communication.
+`;
+
+function ROS2Chapter() {
+  const [chapterContent, setChapterContent] = useState(initialChapterContent);
+
+  const handlePersonalizedContent = (newContent) => {
+    setChapterContent(newContent);
+  };
+
+  return (
+    <>
+      <div dangerouslySetInnerHTML={{ __html: chapterContent }} />
+      <ChatbotWidget chapterContent={chapterContent} />
+      <ChapterActions chapterContent={chapterContent} onPersonalize={handlePersonalizedContent} />
+    </>
+  );
+}
+
+export default ROS2Chapter;

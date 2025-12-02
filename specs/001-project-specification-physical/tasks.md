@@ -1,4 +1,6 @@
 
+
+
 # Tasks: Physical AI & Humanoid Robotics Textbook + RAG-Based Knowledge System
 
 **Input**: Design documents from `/specs/001-project-specification-physical/`
