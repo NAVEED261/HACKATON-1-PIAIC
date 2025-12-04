@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Union
 from datetime import timedelta
 
 from apps.backend.database import get_db, User # Assuming User model is in database.py

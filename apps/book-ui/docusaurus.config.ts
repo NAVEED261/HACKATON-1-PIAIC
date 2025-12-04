@@ -15,15 +15,15 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://physical-ai-humanoid-robotics.example.com',
+  url: 'https://naveed261.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/HACKATON-1-PIAIC/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'your-github-org', // Usually your GitHub org/user name.
-  projectName: 'your-repo-name', // Usually your repo name.
+  organizationName: 'NAVEED261', // Usually your GitHub org/user name.
+  projectName: 'HACKATON-1-PIAIC', // Usually your repo name.
 
   onBrokenLinks: 'throw',
 

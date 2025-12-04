@@ -37,6 +37,8 @@ All project artifacts and processes must be designed to be compatible with comma
 ### Subsystem Modularity and Documentation
 The project is divided into distinct subsystems: Book System, RAG System, Backend Orchestrator, Auth & Personalization, and Deployment/Infra. Every subsystem MUST have its own dedicated spec.md, plan.md, tasks.md, and implementation documentation. This promotes clear separation of concerns, simplifies maintenance, and ensures thorough documentation for each component.
 
+**Exception for Tightly-Coupled Multi-Subsystem Projects:** For hackathon projects or tightly-integrated systems where all subsystems share the same timeline, deployment, and core dependencies (OpenAI, shared backend), a combined spec/plan/tasks structure is acceptable IF it clearly delineates subsystem boundaries within sections (e.g., "4.1 Book System", "4.2 RAG System"). This exception allows faster iteration while maintaining clarity. This approach is documented in ADR-001 (if applicable).
+
 ### Prompt History Records (PHR) Mandate
 Every user input and significant AI exchange MUST be recorded verbatim in a Prompt History Record (PHR). These records are essential for learning, traceability, and maintaining a complete historical context of the project's evolution. PHRs will be routed to `history/prompts/constitution/`, `history/prompts/<feature-name>/`, or `history/prompts/general/` based on context.
 

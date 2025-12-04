@@ -1,9 +1,15 @@
 fastapi==0.122.0
-uvicorn==0.38.0
+uvicorn[standard]==0.38.0
 openai
 qdrant-client
 asyncpg
+psycopg2-binary
 sqlalchemy
 alembic
 passlib[bcrypt]
 python-jose[cryptography]
+python-dotenv
+python-multipart
+loguru
+httpx
+pytest

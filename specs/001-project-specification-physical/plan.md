@@ -1,72 +1,544 @@
-### Implementation Plan for Physical AI & Humanoid Robotics Textbook + RAG-Based Knowledge System
+### Implementation Plan for Physical AI & Humanoid Robotics Textbook + RAG-Based Knowledge       
+  System
 
----
+  ---
 
-This plan outlines the architectural approach and implementation strategy for the Physical AI & Humanoid Robotics Textbook + RAG-Based Knowledge System, adhering to the requirements in `specs/001-project-specification-physical/spec.md` and the principles in `D:\PIAIC HACKATON PRACTICE\hackaton_1\.specify\memory\constitution.md`.
+  This plan outlines the architectural approach and implementation strategy for the Physical AI    
+   & Humanoid Robotics Textbook + RAG-Based Knowledge System, adhering to the requirements in      
+  `specs/001-project-specification-physical/spec.md` and the principles in `D:\PIAIC HACKATON      
+  PRACTICE\hackaton_1\.specify\memory\constitution.md`.
 
-### 1. Scope and Dependencies
+  ### 1. Scope and Dependencies
 
-**In Scope:**
+  **In Scope:**
 
-*   **Book System (Docusaurus):**
-    *   A complete Docusaurus v2 textbook covering ROS 2, Gazebo & Unity, NVIDIA Isaac, Humanoid Robotics, VLA, and a 13-week study plan.
-    *   User interface elements including sidebar navigation, navbar, search functionality, and footer.
-    *   Integration of per-chapter buttons: "Personalize for Me", "Translate to Urdu", and an embedded chatbot widget.
-    *   Deployment to GitHub Pages as the primary target, with an optional Vercel deployment preset.
-*   **RAG System (Qdrant + OpenAI):**
-    *   Development of an ingestion pipeline capable of processing all Markdown files located in `/apps/book-ui/docs`.
-    *   Implementation of a mechanism to chunk chapters into semantically meaningful units.
-    *   Utilization of OpenAI embeddings for converting text chunks into vector representations.
-    *   Storage of embeddings, associated metadata, and original chunk text within Qdrant.
-    *   Integration of OpenAI LLM for generating final answers within the RAG pipeline.
-    *   Strict enforcement that the RAG system answers solely from the textbook content and politely declines out-of-scope questions.
-    *   Creation of a CLI ingestion script to automate reading MD files, splitting, embedding, and pushing to Qdrant.
-*   **Backend Orchestrator (FastAPI):**
-    *   Development of a `/ask` endpoint responsible for intelligently routing user queries to either the RAG pipeline (for book-related questions) or the SQL pipeline (for user/account-related questions).
-    *   Implementation of authentication APIs: `/auth/signup` and `/auth/signin`.
-    *   Development of user-centric APIs: `/user/profile`, `/chapter/personalize`, and `/chapter/translate`.
-    *   Management of user data, including hashed passwords, learning preferences, and hardware/software background, stored in Neon Postgres.
-    *   All API responses must be formatted as JSON.
-    *   Strict adherence to routing rules to prevent incorrect mixing of RAG and SQL pipelines.
-*   **Auth & Personalization (Neon + Better-Auth):**
-    *   Implementation of a signup process that collects user information such as software background, hardware background, GPU access, and learning style.
-    *   Personalization features to modify chapter difficulty and rewrite chapter content using OpenAI LLM, tailored to individual user profiles.
-    *   Urdu translation functionality to convert Markdown content into Urdu while preserving headings, lists, and general formatting using OpenAI LLM.
-    *   Storage of user profiles, preferences, and learning metadata within Neon Postgres.
-*   **Deployment & Infrastructure:**
-    *   Automated deployment of the Docusaurus book to GitHub Pages.
-    *   Provision for optional Vercel deployment of the Docusaurus book.
-    *   Inclusion of a `Dockerfile` and `docker-compose.yml` for backend containerization.
-    *   Provision of an `.env` template for managing environment variables.
-    *   Generation and publication of public URLs for both the UI (Book) and the Backend API.
-    *   Secure handling and management of all environment variables.
-    *   Production of all required Spec-Kit Plus artifacts: `spec.md`, `plan.md`, `tasks.md`, `implementation docs`, ADR suggestions, and PHR records for all subsystems.
+  *   **Book System (Docusaurus):**
+      *   A complete Docusaurus v2 textbook covering ROS 2, Gazebo & Unity, NVIDIA Isaac,
+  Humanoid Robotics, VLA, and a 13-week study plan.
+      *   User interface elements including sidebar navigation, navbar, search functionality,      
+  and footer.
+      *   Integration of per-chapter buttons: "Personalize for Me", "Translate to Urdu", and an    
+   embedded chatbot widget.
+      *   Deployment to GitHub Pages as the primary target, with an optional Vercel deployment     
+  preset.
+  *   **RAG System (Qdrant + OpenAI):**
+      *   Development of an ingestion pipeline capable of processing all Markdown files located    
+   in `/apps/book-ui/docs`.
+      *   Implementation of a mechanism to chunk chapters into semantically meaningful units.      
+      *   Utilization of OpenAI embeddings for converting text chunks into vector
+  representations.
+      *   Storage of embeddings, associated metadata, and original chunk text within Qdrant.       
+      *   Integration of OpenAI LLM for generating final answers within the RAG pipeline.
+      *   Strict enforcement that the RAG system answers solely from the textbook content and      
+  politely declines out-of-scope questions.
+      *   Creation of a CLI ingestion script to automate reading MD files, splitting,
+  embedding, and pushing to Qdrant.
+  *   **Backend Orchestrator (FastAPI):**
+      *   Development of a `/ask` endpoint responsible for intelligently routing user queries      
+  to either the RAG pipeline (for book-related questions) or the SQL pipeline (for
+  user/account-related questions).
+      *   Implementation of authentication APIs: `/auth/signup` and `/auth/signin`.
+      *   Development of user-centric APIs: `/user/profile`, `/chapter/personalize`, and
+  `/chapter/translate`.
+      *   Management of user data, including hashed passwords, learning preferences, and
+  hardware/software background, stored in Neon Postgres.
+      *   All API responses must be formatted as JSON.
+      *   Strict adherence to routing rules to prevent incorrect mixing of RAG and SQL
+  pipelines.
+  *   **Auth & Personalization (Neon Postgres + Better-Auth):**
+      *   Implementation of a signup process that collects user information such as software       
+  background, hardware background, GPU access, and learning style.
+      *   Personalization features to modify chapter difficulty and rewrite chapter content        
+  using OpenAI LLM, tailored to individual user profiles.
+      *   Urdu translation functionality to convert Markdown content into Urdu while preserving    
+   headings, lists, and general formatting using OpenAI LLM.
+      *   Storage of user profiles, preferences, and learning metadata within Neon Postgres.       
+  *   **Deployment & Infrastructure:**
+      *   Automated deployment of the Docusaurus book to GitHub Pages.
+      *   Provision for optional Vercel deployment of the Docusaurus book.
+      *   Inclusion of a `Dockerfile` and `docker-compose.yml` for backend containerization.       
+      *   Provision of an `.env` template for managing environment variables.
+      *   Generation and publication of public URLs for both the UI (Book) and the Backend API.    
+      *   Secure handling and management of all environment variables.
+      *   Production of all required Spec-Kit Plus artifacts: `spec.md`, `plan.md`, `tasks.md`,    
+   `implementation docs`, ADR suggestions, and PHR records for all subsystems.
 
-**Out of Scope:**
+  **Out of Scope:**
 
-*   Real-time, bidirectional chat interactions beyond a single POST request to the `/ask` endpoint.
-*   Advanced Natural Language Processing (NLP) functionalities beyond the scope of basic RAG, personalization, and translation, such as sentiment analysis of user inputs or complex dialogue management.
-*   Sophisticated user role management or granular permission systems beyond fundamental authentication.
-*   Self-hosting of Qdrant or Neon Postgres in production environments, relying instead on managed service offerings.
-*   Comprehensive multi-language support for the entire textbook content, with translation efforts limited to dynamic Urdu translation for chapters.
-*   Any client-side state management for personalization or translation that goes beyond making straightforward API calls.
+  *   Real-time, bidirectional chat interactions beyond a single POST request to the `/ask`        
+  endpoint.
+  *   Advanced Natural Language Processing (NLP) functionalities beyond the scope of basic RAG,    
+   personalization, and translation, such as sentiment analysis of user inputs or complex
+  dialogue management.
+  *   Sophisticated user role management or granular permission systems beyond fundamental
+  authentication.
+  *   Self-hosting of Qdrant or Neon Postgres in production environments, relying instead on       
+  managed service offerings.
+  *   Comprehensive multi-language support for the entire textbook content, with translation       
+  efforts limited to dynamic Urdu translation for chapters.
+  *   Any client-side state management for personalization or translation that goes beyond
+  making straightforward API calls.
 
-**External Dependencies:**
+  **External Dependencies:**
 
-*   **OpenAI:** Essential for text embeddings, RAG LLM responses, personalization through LLM rewriting, and Urdu language translation.
-*   **Qdrant:** Serves as the vector database for efficient storage and retrieval of textbook content embeddings.
-*   **Neon Postgres:** Provides a managed PostgreSQL database solution for user authentication, profiles, and personalization data.
-*   **Docusaurus v2:** The foundational frontend framework for developing and rendering the textbook user interface.
-*   **FastAPI:** The chosen backend web framework for building the orchestrator's API services.
-*   **Better-Auth:** An authentication library specifically for handling user signup and signin processes.
-*   **GitHub Pages:** The primary hosting platform for the static Docusaurus book.
-*   **Vercel:** An optional hosting service for deploying the Docusaurus book.
-*   **Docker/Docker Compose:** Used for containerizing the backend application and facilitating local development environments.
+  *   **OpenAI:** Essential for text embeddings, RAG LLM responses, personalization through LLM    
+   rewriting, and Urdu language translation.
+  *   **Qdrant:** Serves as the vector database for efficient storage and retrieval of textbook    
+   content embeddings.
+  *   **Neon Postgres:** Provides a managed PostgreSQL database solution for user
+  authentication, profiles, and personalization data.
+  *   **Docusaurus v2:** The foundational frontend framework for developing and rendering the      
+  textbook user interface.
+  *   **FastAPI:** The chosen backend web framework for building the orchestrator's API
+  services.
+  *   **Better-Auth:** An authentication library specifically for handling user signup and
+  signin processes.
+  *   **GitHub Pages:** The primary hosting platform for the static Docusaurus book.
+  *   **Vercel:** An optional hosting service for deploying the Docusaurus book.
+  *   **Docker/Docker Compose:** Used for containerizing the backend application and
+  facilitating local development environments.
 
-### 2. Key Decisions and Rationale\n\n*   **Decision: Monorepo Structure for Unified Development**\n    *   **Options Considered:** A monorepo (all related projects in one repository) versus a polyrepo (separate repositories for each project/subsystem).\n    *   **Trade-offs:** Polyrepos offer strict decoupling and independent deployment, but they introduce overhead in managing shared dependencies, cross-service communication, and consistent tooling. Monorepos streamline dependency management, allow for atomic commits across services, and facilitate unified CI/CD pipelines.\n    *   **Rationale:** Given the tight coupling and frequent interactions between the Docusaurus UI, the FastAPI backend, and the RAG ingestion pipeline, a monorepo significantly simplifies development, testing, and deployment. This structure aligns well with the Spec-Kit Plus workflow, providing a single source of truth for all project artifacts and code.\n    *   **Principles Applied:** Smallest viable change (in terms of initial setup complexity), CLI-friendly, Repo-friendly.\n    *   **ADR Suggestion:** 📋 Architectural decision detected: Monorepo vs. Polyrepo for integrated system. Document reasoning and tradeoffs? Run `/sp.adr MonorepoVsPolyrepoDecision`\n\n*   **Decision: Sole Reliance on OpenAI for LLM and Embedding Services**\n    *   **Options Considered:** Utilizing OpenAI's API exclusively, integrating various open-source models (e.g., from Hugging Face), or combining OpenAI with other commercial LLM providers.\n    *   **Trade-offs:** Exclusive reliance on OpenAI ensures access to high-quality, pre-trained models with simplified integration but introduces vendor lock-in and potential cost variability. Open-source models offer greater flexibility and cost control but demand more effort in deployment, fine-tuning, and maintenance.\n    *   **Rationale:** The project specification explicitly mandates OpenAI for all LLM-related tasks, including embeddings, RAG answers, personalization, and Urdu translation. This decision streamlines the LLM stack, leverages OpenAI's advanced capabilities, and reduces the complexity of managing multiple AI service providers.\n    *   **Principles Applied:** Authoritative Source Mandate (strict adherence to the project specification).\n\n*   **Decision: FastAPI as the Central Backend Orchestrator**\n    *   **Options Considered:** Flask, Django, Node.js (Express), Go (Gin/Echo).\n    *   **Trade-offs:** FastAPI offers exceptional performance, built-in data validation and serialization (Pydantic), and automatic API documentation (Swagger UI), making it highly efficient for building robust API services. Other frameworks have different ecosystems, performance characteristics, and learning curves.\n    *   **Rationale:** FastAPI's asynchronous capabilities (`async/await`) are ideal for handling I/O-bound operations such as external API calls to OpenAI and database interactions with Neon Postgres. Its Pydantic integration ensures strict data contract enforcement, which is crucial for the `/ask` endpoint's intelligent routing and general API reliability. Its lightweight nature supports a rapid development cycle.\n    *   **Principles Applied:** Smallest viable change (easy to get started), CLI-friendly.\n\n*   **Decision: Qdrant as the Vector Database for RAG**\n    *   **Options Considered:** Pinecone, Weaviate, Milvus, pgvector (PostgreSQL extension).\n    *   **Trade-offs:** Qdrant is an open-source, high-performance vector database that excels in similarity search and offers rich metadata filtering capabilities. Other solutions vary in terms of pricing models, deployment complexity, and specific feature sets.\n    *   **Rationale:** Qdrant is purpose-built for efficient vector search, which is a core requirement for the RAG system. Its capability to store and filter metadata alongside vectors will be invaluable for potential future enhancements, such as filtering RAG results by chapter or topic. The availability of a clear API and client libraries facilitates integration with the FastAPI backend and ingestion script.\n    *   **Principles Applied:** CLI-friendly (for the ingestion script), Subsystem Modularity.\n\n*   **Decision: Neon Postgres for Relational Data Management**\n    *   **Options Considered:** Self-hosting a PostgreSQL instance, AWS RDS, Google Cloud SQL, or other managed SQL databases.\n    *   **Trade-offs:** Neon provides a serverless PostgreSQL offering with autoscaling, branching capabilities, and simplified management. Self-hosting introduces significant operational overhead and maintenance responsibilities.\n    *   **Rationale:** Neon Postgres delivers a robust, scalable, and managed relational database solution, perfectly suited for storing sensitive user data, authentication credentials (hashed), profiles, and personalization preferences. Its serverless nature aligns with the goals of easy reproduction, simplified onboarding, and cost-effective scaling for a project of this nature.\n    *   **Principles Applied:** CLI-friendly (easy connection), Subsystem Modularity.\n
-### 3. Interfaces and API Contracts\n\n**Book System (Docusaurus) - Frontend Interactions with Backend Orchestrator:**\n\n*   **Chatbot Widget Interaction:**\n    *   **Method:** `POST`\n    *   **Endpoint:** `/api/ask` (on the FastAPI Orchestrator)\n    *   **Request Body:** `application/json` with schema: `{\"question\": \"string\"}`.\n    *   **Response Body:** `application/json`.\n        *   For RAG-routed questions: `{\"answer\": \"string\", \"source_docs\": [\"path/to/source.md\"]}`.\n        *   For SQL-routed questions: `{\"answer\": \"string\"}` (e.g., \"Login successful\", \"Profile updated\").\n    *   **Error Codes:** `HTTP 400 Bad Request`, `HTTP 500 Internal Server Error`.\n*   **\"Personalize for Me\" Button Interaction:**\n    *   **Method:** `POST`\n    *   **Endpoint:** `/api/chapter/personalize` (on the FastAPI Orchestrator)\n    *   **Request Body:** `application/json` with schema: `{\"chapter_content\": \"string\", \"user_id\": \"string\"}` (or inferred from auth token).\n    *   **Response Body:** `application/json` with schema: `{\"personalized_content\": \"string\"}`.\n    *   **Error Codes:** `HTTP 400 Bad Request`, `HTTP 401 Unauthorized`, `HTTP 500 Internal Server Error`.\n*   **\"Translate to Urdu\" Button Interaction:**\n    *   **Method:** `POST`\n    *   **Endpoint:** `/api/chapter/translate` (on the FastAPI Orchestrator)\n    *   **Request Body:** `application/json` with schema: `{\"chapter_content\": \"string\", \"target_language\": \"string\"}` (defaulting to \"Urdu\").\n    *   **Response Body:** `application/json` with schema: `{\"translated_content\": \"string\"}`.\n    *   **Error Codes:** `HTTP 400 Bad Request`, `HTTP 500 Internal Server Error`.\n\n**Backend Orchestrator (FastAPI) - Core APIs:**\n\n*   **`/ask` Endpoint:**\n    *   **Method:** `POST`\n    *   **Input:** `application/json` with schema: `{\"question\": \"string\"}`.\n    *   **Output (RAG Path):** `application/json` with schema: `{\"answer\": \"string\", \"source_docs\": [\"path/to/source.md\"]}`.\n    *   **Output (SQL/Auth Path):** `application/json` with schema: `{\"answer\": \"string\"}`.\n    *   **Error Taxonomy:**\n        *   `400 Bad Request`: Invalid input format, missing question.\n        *   `500 Internal Server Error`: Backend processing failure, RAG system error, SQL query error.\n*   **Authentication APIs (`/auth/signup`, `/auth/signin`):**\n    *   **`/auth/signup`:**\n        *   **Method:** `POST`\n        *   **Input:** `application/json` with schema: `{\"username\": \"string\", \"password\": \"string\", \"software_background\": \"string\", \"hardware_background\": \"string\", \"gpu_access\": \"boolean\", \"learning_style\": \"string\"}`.\n        *   **Output:** `application/json` with schema: `{\"message\": \"User created successfully\", \"user_id\": \"string\"}`.\n        *   **Error Taxonomy:** `400 Bad Request`, `409 Conflict` (Username already exists), `500 Internal Server Error`.\n    *   **`/auth/signin`:**\n        *   **Method:** `POST`\n        *   **Input:** `application/json` with schema: `{\"username\": \"string\", \"password\": \"string\"}`.\n        *   **Output:** `application/json` with schema: `{\"message\": \"Login successful\", \"access_token\": \"string\", \"token_type\": \"bearer\"}`.\n        *   **Error Taxonomy:** `401 Unauthorized` (Invalid credentials), `500 Internal Server Error`.\n*   **User and Chapter APIs (`/user/profile`, `/chapter/personalize`, `/chapter/translate`):**\n    *   **`/user/profile`:**\n        *   **Method:** `GET` (retrieve profile), `PUT` (update profile).\n        *   **Authentication:** Requires `Authorization: Bearer <token>` header.\n        *   **Input (GET):** No body.\n        *   **Output (GET):** `application/json` with schema: `{\"user_id\": \"string\", \"username\": \"string\", \"software_background\": \"string\", \"hardware_background\": \"string\", \"gpu_access\": \"boolean\", \"learning_style\": \"string\"}`.\n        *   **Input (PUT):** `application/json` (partial update) with schema: `{\"software_background\": \"string\", ...}`.\n        *   **Output (PUT):** `application/json` with schema: `{\"message\": \"Profile updated successfully\"}`.\n        *   **Error Taxonomy:** `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.\n    *   **`/chapter/personalize`:**\n        *   **Method:** `POST`\n        *   **Authentication:** Requires `Authorization: Bearer <token>` header.\n        *   **Input:** `application/json` with schema: `{\"chapter_content\": \"string\", \"user_id\": \"string\"}` (or inferred from auth token).\n        *   **Output:** `application/json` with schema: `{\"personalized_content\": \"string\"}`.\n        *   **Error Taxonomy:** `400 Bad Request`, `401 Unauthorized`, `500 Internal Server Error`.\n    *   **`/chapter/translate`:**\n        *   **Method:** `POST`\n        *   **Authentication:** Requires `Authorization: Bearer <token>` header.\n        *   **Input:** `application/json` with schema: `{\"chapter_content\": \"string\", \"target_language\": \"string\"}`.\n        *   **Output:** `application/json` with schema: `{\"translated_content\": \"string\"}`.\n        *   **Error Taxonomy:** `400 Bad Request`, `500 Internal Server Error`.\n\n**Versioning Strategy:**\n\n*   Initial API deployment will be version 1 (`v1`). No explicit version prefix will be used in URLs for this initial release, assuming backward compatibility for minor changes. Any future major breaking changes will necessitate the introduction of a `/v2/` prefix.\n\n**Idempotency, Timeouts, Retries:**\n\n*   **Idempotency:**\n    *   `POST /auth/signup` is not inherently idempotent; multiple calls with the same data will create duplicate users if not explicitly handled (e.g., unique username constraint).\n    *   All `PUT` operations for `/user/profile` should be designed to be idempotent.\n*   **Timeouts:**\n    *   FastAPI and client-side (Docusaurus) will implement appropriate timeouts for API calls, especially those involving external services like OpenAI (e.g., 30-60 seconds for LLM calls).\n    *   **Retries:**\n    *   Client-side (Docusaurus) will incorporate basic retry mechanisms for transient network failures on API calls.\n    *   The Backend Orchestrator will implement retries with exponential backoff for interactions with external LLM services (OpenAI) and potentially Qdrant/Neon for transient errors.\n\n**Error Taxonomy with Standardized Status Codes:**\n\n*   `200 OK`: Indicates successful completion of the request.\n*   `201 Created`: Denotes that a new resource has been successfully created (e.g., user signup).\n*   `400 Bad Request`: Signifies invalid input parameters, malformed request body, or missing required fields.\n*   `401 Unauthorized`: Authentication credentials are required or provided credentials are invalid (e.g., invalid JWT token).\n*   `403 Forbidden`: The client is authenticated but lacks the necessary permissions to access the resource or perform the action.\n*   `404 Not Found`: The requested resource could not be found.\n*   `409 Conflict`: Indicates a conflict with the current state of the target resource (e.g., a username already exists during signup).\n*   `500 Internal Server Error`: A generic server-side error occurred during processing.\n*   `502 Bad Gateway`: The server received an invalid response from an upstream server (e.g., OpenAI, Qdrant).\n*   `503 Service Unavailable`: The server is temporarily unable to handle the request, often due to overloaded or down upstream services.\n
-### 4. Non-Functional Requirements (NFRs) and Budgets\n\n**Performance:**\n\n*   **p95 Latency:**\n    *   `/ask` endpoint (RAG path): Target less than 5 seconds, inclusive of OpenAI LLM processing time.\n    *   `/ask` endpoint (SQL path): Target less than 200 milliseconds.\n    *   Authentication and User Profile APIs: Target less than 300 milliseconds.\n    *   Personalization and Translation APIs: Target less than 10 seconds, acknowledging the latency introduced by LLM rewrites.\n*   **Throughput:**\n    *   Backend Orchestrator: Designed to handle 10-20 requests per second.\n    *   Qdrant: Must effectively manage the expected RAG query load.\n    *   OpenAI: API calls must adhere to OpenAI's defined rate limits.\n*   **Resource Caps:**\n    *   Backend (FastAPI): CPU and memory usage should remain within typical limits for a small VM or container (e.g., 1-2 vCPU, 2-4GB RAM). Provision for autoscaling if deployed on serverless platforms.\n    *   Qdrant and Neon Postgres: As managed services, scaling and resource management are handled by their respective providers.\n\n**Reliability:**\n\n*   **SLOs (Service Level Objectives):**\n    *   Uptime: Aim for 99.9% availability for the Backend Orchestrator and core functionalities (RAG, authentication).\n    *   Error Rate: Maintain an error rate below 1% for all critical API endpoints.\n*   **Error Budgets:** Implement continuous monitoring to track actual error rates against the defined SLOs, allowing for proactive intervention.\n*   **Degradation Strategy:**\n    *   If OpenAI services become unavailable, RAG, personalization, and translation features will return specific error messages indicating their temporary unavailability.\n    *   In the event of Qdrant service disruption, the RAG system will be rendered inoperable.\n    *   If Neon Postgres experiences an outage, authentication and personalization features will be inaccessible.\n    *   The Book UI (Docusaurus) will remain fully accessible as a static website, unaffected by backend service disruptions.\n\n**Security:**\n\n*   **AuthN/AuthZ (Authentication/Authorization):**\n    *   Authentication: Implement JWT-based tokens for API access, issued after successful user sign-in via `/auth/signin`.\n    *   Authorization: Basic user-level authorization will be enforced, primarily ensuring that a `user_id` in the JWT token matches the requested resource. Complex Role-Based Access Control (RBAC) is out of scope for the initial release.\n*   **Data Handling:**\n    *   Passwords: MUST be hashed using robust, modern cryptographic algorithms (e.g., Argon2, bcrypt) before storage in Neon Postgres.\n    *   Sensitive User Data: All sensitive user data stored in Neon Postgres will be encrypted at rest (a feature provided by Neon).\n    *   OpenAI API Keys: Must be stored as environment variables, never hardcoded, and managed securely in all deployment environments.\n*   **Secrets Management:** All API keys, database credentials, and other sensitive configuration parameters will be handled exclusively through environment variables (`.env` for local development; dedicated secret management services for production deployment).\n*   **Auditing:** Implement basic logging for all authentication attempts and other critical API calls for security auditing purposes.\n\n**Cost:**\n\n*   **Unit Economics:** Strategies to minimize OpenAI token usage will be prioritized through optimized prompt engineering and efficient text chunking techniques. Leveraging Qdrant's search efficiency and Neon's serverless scaling capabilities will help manage infrastructure costs. GitHub Pages hosting for the book is free.\n*   **Monitoring:** Continuous monitoring will be established to track OpenAI API costs, Qdrant storage and compute usage, and Neon Postgres consumption.\n
-### 5. Data Management and Migration\n\n**Book System (Docusaurus):**\n\n*   **Source of Truth:** The Markdown files residing in the `/apps/book-ui/docs` directory.\n*   **Schema Evolution:** Managed through the version control of Markdown files and Docusaurus configuration updates. No complex database schema evolution is required.\n*   **Migration and Rollback:** Version control (Git) for Markdown files. Docusaurus deployments are static; therefore, rolling back to a previous version involves deploying an older Git commit.\n*   **Data Retention:** Markdown files are retained indefinitely within the Git repository.\n\n**RAG System (Qdrant):**\n\n*   **Source of Truth:** The chunked text segments, corresponding vector embeddings, and associated metadata stored within the Qdrant collection. The ultimate source is the Docusaurus Markdown files.\n*   **Schema Evolution:** Qdrant collections define a schema for points (vectors and their payload). Any changes to the metadata structure will necessitate a careful migration process, potentially involving re-ingestion of data or explicit updates to existing points.\n*   **Migration and Rollback:**\n    *   The ingestion script is designed to re-index the entire book content as needed.\n    *   In case of issues, a rollback strategy would involve deleting and re-creating the Qdrant collection, then re-ingesting data based on a previous stable version of the source Markdown files and schema.\n*   **Data Retention:** Qdrant will store all indexed book content. Old embeddings or chunks are overwritten or replaced upon re-ingestion.\n\n**Auth & Personalization (Neon Postgres):**\n\n*   **Source of Truth:** The Neon Postgres database.\n*   **Schema Evolution:** SQL migrations will be managed using a tool such as Alembic (for Python/FastAPI) to facilitate controlled evolution of the database schema (e.g., adding new user profile fields, modifying existing ones).\n*   **Migration and Rollback:**\n    *   Alembic will provide mechanisms for forward and backward schema changes.\n    *   Database backups (provided and managed by Neon) will be a primary component of disaster recovery.\n    *   A comprehensive rollback strategy for schema changes will be meticulously planned, emphasizing backward-compatible modifications or the provision of explicit rollback scripts for more significant changes.\n*   **Data Retention:** User data, including profiles and preferences, will be retained for the duration of the user's account lifecycle. Policies regarding inactive accounts or data purging will be defined in a later stage.\n
-### 6. Operational Readiness\n\n**Observability:**\n\n*   **Logs:**\n    *   FastAPI: Implement structured logging (e.g., `loguru` or Python's standard `logging` module configured with JSON formatters) for API request/response cycles, errors, external LLM calls, and critical routing decisions.\n    *   Qdrant/Neon: Leverage the logging capabilities and dashboards provided by these managed services.\n    *   Ingestion script: Log detailed progress and status, including file processing, embedding generation, and successful/failed pushes to Qdrant.\n*   **Metrics:**\n    *   FastAPI: Collect essential API metrics (request count, latency distributions, error rates) using integration with monitoring systems like Prometheus and Grafana.\n    *   OpenAI: Monitor API call success rates and track token usage to stay within budgets and rate limits.\n*   **Traces:** Consider implementing distributed tracing (e.g., using OpenTelemetry) for end-to-end visibility across the FastAPI orchestrator, OpenAI services, and Qdrant, particularly for complex RAG requests. This will be a lower priority for the initial release.\n\n**Alerting:**\n\n*   **Thresholds:**\n    *   High error rates (e.g., exceeding 5% for a continuous 5-minute period) on the `/ask` endpoint.\n    *   Elevated latency (e.g., p95 latency exceeding 10 seconds for 10 minutes) on the RAG path.\n    *   Detection of OpenAI API key exhaustion or consistent rate limit errors.\n    *   Database connection failures or unusually high error rates from Neon Postgres.\n*   **On-call Owners:** A designated team or individual will be responsible for responding to and resolving alerts.\n\n**Runbooks for Common Operational Tasks:**\n\n*   Detailed procedures for deploying the Docusaurus book.\n*   Step-by-step instructions for deploying the FastAPI backend.\n*   Guidance on executing and monitoring the RAG ingestion script.\n*   Troubleshooting guides for common RAG-related issues (e.g., \"I don't have enough context\").\n*   Procedures for resetting or rebuilding the Qdrant index.\n*   Instructions for accessing and analyzing backend application logs.\n\n**Deployment and Rollback Strategies:**\n\n*   **Book (Docusaurus):**\n    *   Deployment: A dedicated GitHub Actions workflow will automate the build process and deployment to GitHub Pages.\n    *   Rollback: Achieved by reverting to a previous stable Git commit and re-triggering the GitHub Pages deployment.\n*   **Backend (FastAPI):**\n    *   Deployment: Docker images will be built and pushed to a container registry. Deployment to a VM or container service will leverage `docker-compose` or a Kubernetes manifest (if scaling warrants it).\n    *   Rollback: Involves deploying a previously validated and stable Docker image.\n*   **Qdrant and Neon Postgres:** As managed services, their deployment, scaling, and rollback mechanisms are handled by their respective providers. The ingestion script will manage data updates within Qdrant.\n\n**Feature Flags and Compatibility:**\n\n*   For the initial release, an explicit feature flag system will not be implemented. New features will be introduced as part of the main release cycle.\n*   Backward compatibility will be maintained for API changes wherever feasible, with clear communication and versioning for any breaking changes.\n
-### 7. Risk Analysis and Mitigation\n\n*   **Risk 1: Escalating OpenAI API Costs and Rate Limit Exceedances.**\n    *   **Blast Radius:** High; can lead to significant, unforeseen operational expenses and/or service interruptions.\n    *   **Mitigation Strategies:**\n        *   Implement rigorous monitoring of OpenAI token usage.\n        *   Continuously optimize prompt engineering and text chunking strategies to minimize token consumption per request.\n        *   Enforce rate limiting and implement exponential backoff strategies for all OpenAI API calls to prevent exceeding quotas.\n        *   Explore and implement caching mechanisms for frequently asked RAG queries or pre-generated personalized content.\n        *   Set up automated cost alerts on the OpenAI account to notify stakeholders of unusual spending patterns.\n*   **Risk 2: RAG System Inaccuracy and \"Hallucinations.\"**\n    *   **Blast Radius:** High; can severely erode user trust and provide incorrect or misleading information.\n    *   **Mitigation Strategies:**\n        *   Conduct comprehensive testing of the RAG system using a diverse set of questions, including adversarial and out-of-scope queries.\n        *   Strictly enforce the \"RAG Safety Rule\" from `constitution.md`, ensuring a clear \"I don't have enough context\" response for out-of-scope questions.\n        *   Continuously fine-tune the text chunking strategy and retrieval parameters (e.g., the `k` value for nearest neighbors search).\n        *   Implement a human review process for RAG answers, especially for critical or complex queries.\n        *   Regularly update text embeddings if the textbook content undergoes significant revisions.\n*   **Risk 3: Data Ingestion Pipeline Failures Leading to Stale RAG Data.**\n    *   **Blast Radius:** Medium; results in outdated RAG knowledge, providing incorrect answers, and potentially impacting personalization features.\n    *   **Mitigation Strategies:**\n        *   Build the CLI ingestion script with robust error handling, detailed logging, and retry mechanisms.\n        *   Automate the scheduled execution of the ingestion script with immediate notification on any failure.\n        *   Implement data integrity checks, such as checksum verification or versioning of source Markdown files, to detect data corruption or unexpected changes.\n        *   Ensure the ingestion process is idempotent, allowing for safe re-runs without duplicating or corrupting data.\n
-### 8. Evaluation and Validation\n\n**Definition of Done (Tests, Scans, and Documentation):**\n\n*   **Unit Tests:** Comprehensive unit tests will be developed for core FastAPI logic (e.g., request routing, database interaction wrappers, authentication handlers), individual RAG components (e.g., text chunking, embedding generation calls), and the CLI ingestion script.\n*   **Integration Tests:** End-to-end integration tests will validate the full workflow of the `/ask` endpoint (both RAG and SQL paths), the complete authentication flow (signup, sign-in, token validation), and the personalization and translation features.\n*   **Code Quality Scans:** Automated code quality checks will be integrated into the CI/CD pipeline, including linting (e.g., Black for formatting, Flake8 for style), and static analysis (e.g., MyPy for type checking) for all Python code.\n*   **Security Scans:** Basic dependency vulnerability scans will be performed to identify and mitigate known security risks in third-party libraries.\n*   **Acceptance Criteria Verification:** All points outlined in Section 5 (\"Acceptance Criteria\") of the `spec.md` will be thoroughly tested and validated.\n*   **Documentation Completeness:** All required Spec-Kit Plus files (`spec.md`, `plan.md`, `tasks.md`, `implementation docs`, ADRs, PHRs) must exist, be up-to-date, and accurately reflect the current state of the project.\n\n**Output Validation for Format, Requirements, and Safety:**\n\n*   **API Response Validation:** All API responses will be validated against their defined JSON schemas to ensure correct structure and data types.\n*   **RAG Answer Validation:** RAG system responses will be manually and programmatically reviewed for coherence, relevance to the query, and strict adherence to the textbook-only content constraint. The \"no context\" fallback for out-of-scope questions will be rigorously tested.\n*   **Personalized/Translated Content Validation:** Output from personalization and translation features will be verified to maintain original Markdown formatting and semantic correctness in the target language/style.\n*   **Security Checks:** Regular verification that passwords are securely hashed, sensitive data is not inadvertently exposed in logs or APIs, and API keys are managed safely.\n*   **Deployment URL Verification:** Confirmation that public UI and Backend URLs are successfully generated, are accessible, and correctly point to the deployed services.\n\n### 9. Architectural Decision Record (ADR)\n\nThe following architectural decisions are deemed significant enough to warrant dedicated Architectural Decision Records, as they have long-term impact, multiple alternatives, and cross-cutting scope:\n\n*   📋 Architectural decision detected: Monorepo vs. Polyrepo for integrated system. Document reasoning and tradeoffs? Run `/sp.adr MonorepoVsPolyrepoDecision`\n*   📋 Architectural decision detected: Choice of specific technologies (FastAPI, Qdrant, Neon Postgres). Document reasoning and tradeoffs? Run `/sp.adr TechStackSelection`\n\n---\n\n### Critical Files for Implementation\n- `D:\PIAIC HACKATON PRACTICE\hackaton_1\apps\backend\main.py` - Core FastAPI application entry point, including router registration and global configuration.\n- `D:\PIAIC HACKATON PRACTICE\hackaton_1\apps\backend\api\routers\ask.py` - FastAPI router containing the `/ask` endpoint logic for query classification and routing to RAG or SQL.\n- `D:\PIAIC HACKATON PRACTICE\hackaton_1\apps\backend\services\rag.py` - Service layer handling Qdrant interaction, OpenAI embedding calls, and RAG LLM integration.\n- `D:\PIAIC HACKATON PRACTICE\hackaton_1\apps\backend\services\auth.py` - Service layer for user authentication (Better-Auth) and user profile management with Neon Postgres.\n- `D:\PIAIC HACKATON PRACTICE\hackaton_1\scripts\ingest_book.py` - CLI script responsible for reading Docusaurus Markdown files, chunking, embedding, and uploading to Qdrant.
+  ### 2. Key Decisions and Rationale
+
+  *   **Decision: Monorepo Structure for Unified Development**
+      *   **Options Considered:** A monorepo (all related projects in one repository) versus a     
+  polyrepo (separate repositories for each project/subsystem).
+      *   **Trade-offs:** Polyrepos offer strict decoupling and independent deployment, but        
+  they introduce overhead in managing shared dependencies, cross-service communication, and        
+  consistent tooling. Monorepos streamline dependency management, allow for atomic commits
+  across services, and facilitate unified CI/CD pipelines.
+      *   **Rationale:** Given the tight coupling and frequent interactions between the
+  Docusaurus UI, the FastAPI backend, and the RAG ingestion pipeline, a monorepo significantly     
+  simplifies development, testing, and deployment. This structure aligns well with the Spec-Kit    
+   Plus workflow, providing a single source of truth for all project artifacts and code.
+      *   **Principles Applied:** Smallest viable change (in terms of initial setup
+  complexity), CLI-friendly, Repo-friendly.
+      *   *(ADR Suggestion removed as per updated constitution)*
+
+  *   **Decision: Sole Reliance on OpenAI for LLM and Embedding Services**
+      *   **Options Considered:** Utilizing OpenAI's API exclusively, integrating various
+  open-source models (e.g., from Hugging Face), or combining OpenAI with other commercial LLM      
+  providers.
+      *   **Trade-offs:** Exclusive reliance on OpenAI ensures access to high-quality,
+  pre-trained models with simplified integration but introduces vendor lock-in and potential       
+  cost variability. Open-source models offer greater flexibility and cost control but demand       
+  more effort in deployment, fine-tuning, and maintenance.
+      *   **Rationale:** The project specification explicitly mandates OpenAI for all
+  LLM-related tasks, including embeddings, RAG answers, personalization, and Urdu translation.     
+  This decision streamlines the LLM stack, leverages OpenAI's advanced capabilities, and
+  reduces the complexity of managing multiple AI service providers.
+      *   **Principles Applied:** Authoritative Source Mandate (strict adherence to the project    
+   specification).
+      *   *(ADR Suggestion removed as per updated constitution)*
+
+  *   **Decision: FastAPI as the Central Backend Orchestrator**
+      *   **Options Considered:** Flask, Django, Node.js (Express), Go (Gin/Echo).
+      *   **Trade-offs:** FastAPI offers exceptional performance, built-in data validation and     
+  serialization (Pydantic), and automatic API documentation (Swagger UI), making it highly
+  efficient for building robust API services. Other frameworks have different ecosystems,
+  performance characteristics, and learning curves.
+      *   **Rationale:** FastAPI's asynchronous capabilities (`async/await`) are ideal for
+  handling I/O-bound operations such as external API calls to OpenAI and database interactions     
+  with Neon Postgres. Its Pydantic integration ensures strict data contract enforcement, which     
+  is crucial for the `/ask` endpoint's intelligent routing and general API reliability. Its        
+  lightweight nature supports a rapid development cycle.
+      *   **Principles Applied:** Smallest viable change (easy to get started), CLI-friendly.      
+
+  *   **Decision: Qdrant as the Vector Database for RAG**
+      *   **Options Considered:** Pinecone, Weaviate, Milvus, pgvector (PostgreSQL extension).     
+      *   **Trade-offs:** Qdrant is an open-source, high-performance vector database that
+  excels in similarity search and offers rich metadata filtering capabilities. Other solutions     
+  vary in terms of pricing models, deployment complexity, and specific feature sets.
+      *   **Rationale:** Qdrant is purpose-built for efficient vector search, which is a core      
+  requirement for the RAG system. Its capability to store and filter metadata alongside vectors    
+   will be invaluable for potential future enhancements, suchas filtering RAG results by
+  chapter or topic. The availability of a clear API and client libraries facilitates
+  integration with the FastAPI backend and ingestion script.
+      *   **Principles Applied:** CLI-friendly (for the ingestion script), Subsystem
+  Modularity.
+
+  *   **Decision: Neon Postgres for Relational Data Management**
+      *   **Options Considered:** Self-hosting a PostgreSQL instance, AWS RDS, Google Cloud        
+  SQL, or other managed SQL databases.
+      *   **Trade-offs:** Neon Postgres provides a serverless PostgreSQL offering with autoscaling,
+  branching capabilities, and simplified management. Self-hosting introduces significant
+  operational overhead and maintenance responsibilities.
+      *   **Rationale:** Neon Postgres delivers a robust, scalable, and managed relational
+  database solution, perfectly suited for storing sensitive user data, authentication
+  credentials (hashed), profiles, and personalization preferences. Its serverless nature aligns    
+   with the goals of easy reproduction, simplified onboarding, and cost-effective scaling for a    
+   project of this nature.
+      *   **Principles Applied:** CLI-friendly (easy connection), Subsystem Modularity.
+
+  ### 3. Interfaces and API Contracts
+
+  **Book System (Docusaurus) - Frontend Interactions with Backend Orchestrator:**
+
+  *   **Chatbot Widget Interaction:**
+      *   **Method:** `POST`
+      *   **Endpoint:** `/api/ask` (on the FastAPI Orchestrator)
+      *   **Request Body:** `application/json` with schema: `{"question": "string"}`.
+      *   **Response Body:** `application/json`.
+          *   For RAG-routed questions: `{"answer": "string", "source_docs":
+  ["path/to/source.md"]}`.
+          *   For SQL-routed questions: `{"answer": "string"}` (e.g., "Login successful",
+  "Profile updated").
+      *   **Error Codes:** `HTTP 400 Bad Request`, `HTTP 500 Internal Server Error`.
+  *   **"Personalize for Me" Button Interaction:**
+      *   **Method:** `POST`
+      *   **Endpoint:** `/api/chapter/personalize` (on the FastAPI Orchestrator)
+      *   **Request Body:** `application/json` with schema: `{"chapter_content": "string",
+  "user_id": "string"}` (or inferred from auth token).
+      *   **Response Body:** `application/json` with schema: `{"personalized_content":
+  "string"}`.
+      *   **Error Codes:** `HTTP 400 Bad Request`, `HTTP 401 Unauthorized`, `HTTP 500 Internal     
+  Server Error`.
+  *   **"Translate to Urdu" Button Interaction:**
+      *   **Method:** `POST`
+      *   **Endpoint:** `/api/chapter/translate` (on the FastAPI Orchestrator)
+      *   **Request Body:** `application/json` with schema: `{"chapter_content": "string",
+  "target_language": "string"}` (defaulting to "Urdu").
+      *   **Response Body:** `application/json` with schema: `{"translated_content":
+  "string"}`.
+      *   **Error Codes:** `HTTP 400 Bad Request`, `HTTP 500 Internal Server Error`.
+
+  **Backend Orchestrator (FastAPI) - Core APIs:**
+
+  *   **`/ask` Endpoint:**
+      *   **Method:** `POST`
+      *   **Input:** `application/json` with schema: `{"question": "string"}`.
+      *   **Output (RAG Path):** `application/json` with schema: `{"answer": "string",
+  "source_docs": ["path/to/source.md"]}`.
+      *   **Output (SQL/Auth Path):** `application/json` with schema: `{"answer": "string"}`.      
+      *   **Error Taxonomy:**
+          *   `400 Bad Request`: Invalid input format, missing question.
+          *   `500 Internal Server Error`: Backend processing failure, RAG system error, SQL       
+  query error.
+  *   **Authentication APIs (`/auth/signup`, `/auth/signin`):**
+      *   **`/auth/signup`:**
+          *   **Method:** `POST`
+          *   **Input:** `application/json` with schema: `{"username": "string", "password":       
+  "string", "software_background": "string", "hardware_background": "string", "gpu_access":        
+  "boolean", "learning_style": "string"}`.
+          *   **Output:** `application/json` with schema: `{"message": "User created
+  successfully", "user_id": "string"}`.
+          *   **Error Taxonomy:** `400 Bad Request`, `409 Conflict` (Username already exists),     
+  `500 Internal Server Error`.
+      *   **`/auth/signin`:**
+          *   **Method:** `POST`
+          *   **Input:** `application/json` with schema: `{"username": "string", "password":       
+  "string"}`.
+          *   **Output:** `application/json` with schema: `{"message": "Login successful",
+  "access_token": "string", "token_type": "bearer"}`.
+          *   **Error Taxonomy:** `401 Unauthorized` (Invalid credentials), `500 Internal
+  Server Error`.
+  *   **User and Chapter APIs (`/user/profile`, `/chapter/personalize`, 
+  `/chapter/translate`):**
+      *   **`/user/profile`:**
+          *   **Method:** `GET` (retrieve profile), `PUT` (update profile).
+          *   **Authentication:** Requires `Authorization: Bearer <token>` header.
+          *   **Input (GET):** No body.
+          *   **Output (GET):** `application/json` with schema: `{"user_id": "string",
+  "username": "string", "software_background": "string", "hardware_background": "string",
+  "gpu_access": "boolean", "learning_style": "string"}`.
+          *   **Input (PUT):** `application/json` (partial update) with schema:
+  `{"software_background": "string", ...}`.
+          *   **Output (PUT):** `application/json` with schema: `{"message": "Profile updated      
+  successfully"}`.
+          *   **Error Taxonomy:** `401 Unauthorized`, `404 Not Found`, `500 Internal Server        
+  Error`.
+      *   **`/chapter/personalize`:**
+          *   **Method:** `POST`
+          *   **Authentication:** Requires `Authorization: Bearer <token>` header.
+          *   **Input:** `application/json` with schema: `{"chapter_content": "string",
+  "user_id": "string"}` (or inferred from auth token).
+          *   **Output:** `application/json` with schema: `{"personalized_content": "string"}`.    
+          *   **Error Taxonomy:** `400 Bad Request`, `401 Unauthorized`, `500 Internal Server      
+  Error`.
+      *   **`/chapter/translate`:**
+          *   **Method:** `POST`
+          *   **Authentication:** Requires `Authorization: Bearer <token>` header.
+          *   **Input:** `application/json` with schema: `{"chapter_content": "string",
+  "target_language": "string"}`.
+          *   **Output:** `application/json` with schema: `{"translated_content": "string"}`.      
+          *   **Error Taxonomy:** `400 Bad Request`, `500 Internal Server Error`.
+
+  **Versioning Strategy:**
+
+  *   Initial API deployment will be version 1 (`v1`). No explicit version prefix will be used     
+  in URLs for this initial release, assuming backward compatibility for minor changes. Any
+  future major breaking changes will necessitate the introduction of a `/v2/` prefix.
+
+  **Idempotency, Timeouts, Retries:**
+
+  *   **Idempotency:**
+      *   `POST /auth/signup` is not inherently idempotent; multiple calls with the same data      
+  will create duplicate users if not explicitly handled (e.g., unique username constraint).        
+      *   All `PUT` operations for `/user/profile` should be designed to be idempotent.
+  *   **Timeouts:**
+      *   FastAPI and client-side (Docusaurus) will implement appropriate timeouts for API
+  calls, especially those involving external services like OpenAI (e.g., 30-60 seconds for LLM     
+  calls).
+      *   **Retries:**
+      *   Client-side (Docusaurus) will incorporate basic retry mechanisms for transient
+  network failures on API calls.
+      *   The Backend Orchestrator will implement retries with exponential backoff for
+  interactions with external LLM services (OpenAI) and potentially Qdrant/Neon Postgres for transient       
+  errors.
+
+  **Error Taxonomy with Standardized Status Codes:**
+
+  *   `200 OK`: Indicates successful completion of the request.
+  *   `201 Created`: Denotes that a new resource has been successfully created (e.g., user
+  signup).
+  *   `400 Bad Request`: Signifies invalid input parameters, malformed request body, or missing    
+   required fields.
+  *   `401 Unauthorized`: Authentication credentials are required or provided credentials are      
+  invalid (e.g., invalid JWT token).
+  *   `403 Forbidden`: The client is authenticated but lacks the necessary permissions to
+  access the resource or perform the action.
+  *   `404 Not Found`: The requested resource could not be found.
+  *   `409 Conflict`: Indicates a conflict with the current state of the target resource (e.g.,    
+   a username already exists during signup).
+  *   `500 Internal Server Error`: A generic server-side error occurred during processing.
+  *   `502 Bad Gateway`: The server received an invalid response from an upstream server (e.g.,    
+   OpenAI, Qdrant).
+  *   `503 Service Unavailable`: The server is temporarily unable to handle the request, often     
+  due to overloaded or down upstream services.
+
+  ### 4. Non-Functional Requirements (NFRs) and Budgets
+
+  **Performance:**
+
+  *   **p95 Latency:**
+      *   `/ask` endpoint (RAG pipeline): Target less than 5 seconds, inclusive of OpenAI LLM
+  processing time.
+      *   `/ask` endpoint (SQL path): Target less than 200 milliseconds.
+      *   Authentication and User Profile APIs: Target less than 300 milliseconds.
+      *   Personalization and Translation APIs: Target less than 10 seconds, acknowledging the     
+  latency introduced by LLM rewrites.
+  *   **Throughput:**
+      *   Backend Orchestrator: Designed to handle 10-20 requests per second.
+      *   Qdrant: Must effectively manage the expected RAG query load.
+      *   OpenAI: API calls must adhere to OpenAI's defined rate limits.
+  *   **Resource Caps:**
+      *   Backend (FastAPI): CPU and memory usage should remain within typical limits for a        
+  small VM or container (e.g., 1-2 vCPU, 2-4GB RAM). Provision for autoscaling if deployed on      
+  serverless platforms.
+      *   Qdrant and Neon Postgres: As managed services, scaling and resource management are       
+  handled by their respective providers.
+
+  **Reliability:**
+
+  *   **SLOs (Service Level Objectives):**
+      *   Uptime: Aim for 99.9% availability for the Backend Orchestrator and core
+  functionalities (RAG, authentication).
+      *   Error Rate: Maintain an error rate below 1% for all critical API endpoints.
+  *   **Error Budgets:** Implement continuous monitoring to track actual error rates against       
+  the defined SLOs, allowing for proactive intervention.
+  *   **Degradation Strategy:**
+      *   If OpenAI services become unavailable, RAG, personalization, and translation features    
+   will return specific error messages indicating their temporary unavailability.
+      *   In the event of Qdrant service disruption, the RAG system will be rendered
+  inoperable.
+      *   If Neon Postgres experiences an outage, authentication and personalization features      
+  will be inaccessible.
+      *   The Book UI (Docusaurus) will remain fully accessible as a static website, unaffected    
+   by backend service disruptions.
+
+  **Security:**
+
+  *   **AuthN/AuthZ (Authentication/Authorization):**
+      *   Authentication: Implement JWT-based tokens for API access, issued after successful       
+  user sign-in via `/auth/signin`.
+      *   Authorization: Basic user-level authorization will be enforced, primarily ensuring       
+  that a `user_id` in the JWT token matches the requested resource. Complex Role-Based Access      
+  Control (RBAC) is out of scope for the initial release.
+  *   **Data Handling:**
+      *   Passwords: MUST be hashed using robust, modern cryptographic algorithms (e.g.,
+  Argon2, bcrypt) before storage in Neon Postgres.
+      *   Sensitive User Data: All sensitive user data stored in Neon Postgres will be
+  encrypted at rest (a feature provided by Neon Postgres).
+      *   OpenAI API Keys: Must be stored as environment variables, never hardcoded, and
+  managed securely in all deployment environments.
+  *   **Secrets Management:** All API keys, database credentials, and other sensitive
+  configuration parameters will be handled exclusively through environment variables (`.env`       
+  for local development; dedicated secret management services for production deployment).
+  *   **Auditing:** Implement basic logging for all authentication attempts and other critical     
+  API calls for security auditing purposes.
+
+  **Cost:**
+
+  *   **Unit Economics:** Strategies to minimize OpenAI token usage will be prioritized through    
+   optimized prompt engineering and efficient text chunking techniques. Leveraging Qdrant's        
+  search efficiency and Neon Postgres's serverless scaling capabilities will help manage infrastructure     
+  costs. GitHub Pages hosting for the book is free.
+  *   **Monitoring:** Continuous monitoring will be established to track OpenAI API costs,
+  Qdrant storage and compute usage, and Neon Postgres consumption.
+
+  ### 5. Data Management and Migration
+
+  **Book System (Docusaurus):**
+
+  *   **Source of Truth:** The Markdown files residing in the `/apps/book-ui/docs` directory.      
+  *   **Schema Evolution:** Managed through the version control of Markdown files and
+  Docusaurus configuration updates. No complex database schema evolution is required.
+  *   **Migration and Rollback:** Version control (Git) for Markdown files. Docusaurus
+  deployments are static; therefore, rolling back to a previous version involves deploying an      
+  older Git commit.
+  *   **Data Retention:** Markdown files are retained indefinitely within the Git repository.      
+
+  **RAG System (Qdrant):**
+
+  *   **Source of Truth:** The chunked text segments, corresponding vector embeddings, and
+  associated metadata stored within the Qdrant collection. The ultimate source is the
+  Docusaurus Markdown files.
+  *   **Schema Evolution:** Qdrant collections define a schema for points (vectors and their       
+  payload). Any changes to the metadata structure will necessitate a careful migration process,    
+   potentially involving re-ingestion of data or explicit updates to existing points.
+  *   **Migration and Rollback:**
+      *   The ingestion script is designed to re-index the entire book content as needed.
+      *   In case of issues, a rollback strategy would involve deleting and re-creating the        
+  Qdrant collection, then re-ingesting data based on a previous stable version of the source       
+  Markdown files and schema.
+  *   **Data Retention:** Qdrant will store all indexed book content. Old embeddings or chunks     
+  are overwritten or replaced upon re-ingestion.
+
+  **Auth & Personalization (Neon Postgres):**
+
+  *   **Source of Truth:** The Neon Postgres database.
+  *   **Schema Evolution:** SQL migrations will be managed using a tool such as Alembic (for       
+  Python/FastAPI) to facilitate controlled evolution of the database schema (e.g., adding new      
+  user profile fields, modifying existing ones).
+  *   **Migration and Rollback:**
+      *   Alembic will provide mechanisms for forward and backward schema changes.
+      *   Database backups (provided and managed by Neon Postgres) will be a primary component of
+  disaster recovery.
+      *   A comprehensive rollback strategy for schema changes will be meticulously planned,       
+  emphasizing backward-compatible modifications or the provision of explicit rollback scripts      
+  for more significant changes.
+  *   **Data Retention:** User data, including profiles and preferences, will be retained for      
+  the duration of the user's account lifecycle. Policies regarding inactive accounts or data       
+  purging will be defined in a later stage.
+
+  ### 6. Operational Readiness
+
+  **Observability:**
+
+  *   **Logs:**
+      *   FastAPI: Implement structured logging (e.g., `loguru` or Python's standard `logging`     
+  module configured with JSON formatters) for API request/response cycles, errors, external LLM    
+   calls, and critical routing decisions.
+      *   Qdrant/Neon Postgres: Leverage the logging capabilities and dashboards provided by these
+  managed services.
+      *   Ingestion script: Log detailed progress and status, including file processing,
+  embedding generation, and successful/failed pushes to Qdrant.
+  *   **Metrics:**
+      *   FastAPI: Collect essential API metrics (request count, latency distributions, error      
+  rates) using integration with monitoring systems like Prometheus and Grafana.
+      *   OpenAI: Monitor API call success rates and track token usage to stay within budgets      
+  and rate limits.
+  *   **Traces:** Consider implementing distributed tracing (e.g., using OpenTelemetry) for        
+  end-to-end visibility across the FastAPI orchestrator, OpenAI services, and Qdrant,
+  particularly for complex RAG requests. This will be a lower priority for the initial release.    
+
+  **Alerting:**
+
+  *   **Thresholds:**
+      *   High error rates (e.g., exceeding 5% for a continuous 5-minute period) on the `/ask`     
+  endpoint.
+      *   Elevated latency (e.g., p95 latency exceeding 10 seconds for 10 minutes) on the RAG      
+  path.
+      *   Detection of OpenAI API key exhaustion or consistent rate limit errors.
+      *   Database connection failures or unusually high error rates from Neon Postgres.
+  *   **On-call Owners:** A designated team or individual will be responsible for responding to    
+   and resolving alerts.
+
+  **Runbooks for Common Operational Tasks:**
+
+  *   Detailed procedures for deploying the Docusaurus book.
+  *   Step-by-step instructions for deploying the FastAPI backend.
+  *   Guidance on executing and monitoring the RAG ingestion script.
+  *   Troubleshooting guides for common RAG-related issues (e.g., "I don't have enough
+  context").
+  *   Procedures for resetting or rebuilding the Qdrant index.
+  *   Instructions for accessing and analyzing backend application logs.
+
+  **Deployment and Rollback Strategies:**
+
+  *   **Book (Docusaurus):**
+      *   Deployment: A dedicated GitHub Actions workflow will automate the build process and      
+  deployment to GitHub Pages.
+      *   Rollback: Achieved by reverting to a previous stable Git commit and re-triggering the    
+   GitHub Pages deployment.
+  *   **Backend (FastAPI):**
+      *   Deployment: Docker images will be built and pushed to a container registry.
+  Deployment to a VM or container service will leverage `docker-compose` or a Kubernetes
+  manifest (if scaling warrants it).
+      *   Rollback: Involves deploying a previously validated and stable Docker image.
+  *   **Qdrant and Neon Postgres:** As managed services, their deployment, scaling, and
+  rollback mechanisms are handled by their respective providers. The ingestion script will
+  manage data updates within Qdrant.
+
+  **Feature Flags and Compatibility:**
+
+  *   For the initial release, an explicit feature flag system will not be implemented. New        
+  features will be introduced as part of the main release cycle.
+  *   Backward compatibility will be maintained for API changes wherever feasible, with clear      
+  communication and versioning for any breaking changes.
+
+  ### 7. Risk Analysis and Mitigation
+
+  *   **Risk 1: Escalating OpenAI API Costs and Rate Limit Exceedances.**
+      *   **Blast Radius:** High; can lead to significant, unforeseen operational expenses
+  and/or service interruptions.
+      *   **Mitigation Strategies:**
+          *   Implement rigorous monitoring of OpenAI token usage.
+          *   Continuously optimize prompt engineering and text chunking strategies to minimize    
+   token consumption per request.
+          *   Enforce rate limiting and implement exponential backoff strategies for all OpenAI    
+   API calls to prevent exceeding quotas.
+          *   Explore and implement caching mechanisms for frequently asked RAG queries or
+  pre-generated personalized content.
+          *   Set up automated cost alerts on the OpenAI account to notify stakeholders of
+  unusual spending patterns.
+  *   **Risk 2: RAG System Inaccuracy and "Hallucinations."**
+      *   **Blast Radius:** High; can severely erode user trust and provide incorrect or
+  misleading information.
+      *   **Mitigation Strategies:**
+          *   Conduct comprehensive testing of the RAG system using a diverse set of questions,    
+   including adversarial and out-of-scope queries.
+          *   Strictly enforce the "RAG Safety Rule" from `constitution.md`, ensuring a clear      
+  "I don't have enough context" response for out-of-scope questions.
+          *   Continuously fine-tune the text chunking strategy and retrieval parameters (e.g.,    
+   the `k` value for nearest neighbors search).
+          *   Implement a human review process for RAG answers, especially for critical or
+  complex queries.
+          *   Regularly update text embeddings if the textbook content undergoes significant       
+  revisions.
+  *   **Risk 3: Data Ingestion Pipeline Failures Leading to Stale RAG Data.**
+      *   **Blast Radius:** Medium; results in outdated RAG knowledge, providing incorrect
+  answers, and potentially impacting personalization features.
+      *   **Mitigation Strategies:**
+          *   Build the CLI ingestion script with robust error handling, detailed logging, and     
+  retry mechanisms.
+          *   Automate the scheduled execution of the ingestion script with immediate
+  notification on any failure.
+          *   Implement data integrity checks, suchas checksum verification or versioning of       
+  source Markdown files, to detect data corruption or unexpected changes.
+          *   Ensure the ingestion process is idempotent, allowing for safe re-runs without        
+  duplicating or corrupting data.
+
+  ### 8. Evaluation and Validation
+
+  **Definition of Done (Tests, Scans, and Documentation):**
+
+  *   **Unit Tests:** Comprehensive unit tests will be developed for core FastAPI logic (e.g.,     
+  request routing, database interaction wrappers, authentication handlers), individual RAG
+  components (e.g., text chunking, embedding generation calls), and the CLI ingestion script.      
+  *   **Integration Tests:** End-to-end integration tests will validate the full workflow of       
+  the `/ask` endpoint (both RAG and SQL paths), the complete authentication flow (signup,
+  sign-in, token validation), and the personalization and translation features.
+  *   **Code Quality Scans:** Automated code quality checks will be integrated into the CI/CD      
+  pipeline, including linting (e.g., Black for formatting, Flake8 for style), and static
+  analysis (e.g., MyPy for type checking) for all Python code.
