@@ -12,7 +12,9 @@ import re
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load .env from backend directory
+backend_env = Path(__file__).parent.parent / "apps" / "backend" / ".env"
+load_dotenv(backend_env)
 
 try:
     from openai import OpenAI
@@ -24,7 +26,7 @@ except ImportError as e:
 # Initialize clients
 openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 qdrant_client = QdrantClient(
-    host=os.getenv("QDRANT_HOST", "localhost"),
+    url=os.getenv("QDRANT_HOST", "http://localhost:6333"),
     api_key=os.getenv("QDRANT_API_KEY"),
 )
 
