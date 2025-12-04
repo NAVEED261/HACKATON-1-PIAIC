@@ -1,140 +1,96 @@
-# Physical AI & Humanoid Robotics Textbook + RAG-Based Knowledge System  
-**Hackathon Project – PIAIC**  
-Built using *Specification-Driven Development (Spec-Kit Plus)* and *AI-Native Engineering Workflows*
+# HACKATON-1-PIAIC
 
----
+Short description
+-----------------
+HACKATON-1-PIAIC is a hackathon project repository created for the PIAIC program. It contains application code, deployment instructions, quick-start notes, and project status documentation to help contributors run, develop, and deploy the project.
 
-## 📘 1. Project Overview  
-This project implements a **fully automated AI textbook generation and intelligent delivery system** for:
+This repository currently contains documentation, scripts, and one or more application(s) under the `apps/` directory. Use the documents in the root to learn how to run, deploy, and contribute.
 
-### **Physical AI & Humanoid Robotics**
+Highlights
+----------
+- Consolidated docs for quick start and deployment (see QUICK_START.md and DEPLOYMENT.md).
+- Project status and roadmap tracked in PROJECT_STATUS.md.
+- Supporting scripts and specifications in the repository for development workflows.
 
-The system uses AI to:
+Repository structure
+--------------------
+Top-level (important files & folders):
+- README.md — (this file) project overview and links.
+- QUICK_START.md — step-by-step instructions to get the project running locally.
+  - https://github.com/NAVEED261/HACKATON-1-PIAIC/blob/master/QUICK_START.md
+- DEPLOYMENT.md — deployment and hosting instructions.
+  - https://github.com/NAVEED261/HACKATON-1-PIAIC/blob/master/DEPLOYMENT.md
+- PROJECT_STATUS.md — project progress, open tasks, and roadmap.
+  - https://github.com/NAVEED261/HACKATON-1-PIAIC/blob/master/PROJECT_STATUS.md
+- CLAUDE.md — internal notes or additional documentation (preserved as-is).
+  - https://github.com/NAVEED261/HACKATON-1-PIAIC/blob/master/CLAUDE.md
+- .gitignore, .dockerignore — standard ignores for development and container builds.
+- apps/ — application code (one or more apps). Check this folder for the main source.
+- scripts/, specs/, history/ — supporting directories for automation, specs, and project history.
 
-- Automatically generate textbook chapters  
-- Format content according to specifications  
-- Translate content (English + Urdu)  
-- Ingest chapters into a vector database (Qdrant)  
-- Provide semantic search using RAG (Retrieval-Augmented Generation)  
-- Serve chapters and answers through a FastAPI backend  
-- Display structured content through a Book UI frontend  
+What this README covers
+-----------------------
+- Quick summary of the project
+- How to get started (reference to QUICK_START.md)
+- How to deploy (reference to DEPLOYMENT.md)
+- How to contribute and where to find the project status
+- Contacts and license notes
 
-This is a complete **AI-native knowledge system**, not just a static book.
+Quick start (high level)
+------------------------
+1. Clone the repository:
+   git clone https://github.com/NAVEED261/HACKATON-1-PIAIC.git
+2. Change into the repo directory:
+   cd HACKATON-1-PIAIC
+3. Follow the detailed instructions in QUICK_START.md:
+   https://github.com/NAVEED261/HACKATON-1-PIAIC/blob/master/QUICK_START.md
 
----
+(For exact commands, prerequisites and environment setup please consult QUICK_START.md. If you prefer, I can extract and show the precise steps here.)
 
-## 🚀 2. Key Features  
+Deployment
+----------
+Full deployment instructions are provided in DEPLOYMENT.md:
+https://github.com/NAVEED261/HACKATON-1-PIAIC/blob/master/DEPLOYMENT.md
 
-### ✅ 2.1 Automated Textbook Generation  
-- All chapters defined in `/specs/book-chapters/`  
-- Claude AI auto-generates chapter content  
-- English + Urdu structured templates  
-- Reusable intelligence stored inside `.claude/`
+Read that file for:
+- Building artifacts or Docker images
+- Environment variables and secrets
+- Cloud or hosting provider steps
+- CI/CD notes (if any)
 
-### ✅ 2.2 Fully Functional RAG System  
-- Embeddings generated using OpenAI models  
-- Vector storage using **Qdrant Cloud**  
-- High-accuracy semantic search  
-- Source-aware RAG responses  
+Project status, issues & roadmap
+--------------------------------
+See PROJECT_STATUS.md for current status, known issues, pending tasks and roadmap:
+https://github.com/NAVEED261/HACKATON-1-PIAIC/blob/master/PROJECT_STATUS.md
 
-### ✅ 2.3 FastAPI Backend  
-Located in:
+If you want to track or change priorities, open GitHub issues or update PROJECT_STATUS.md.
 
+Contributing
+------------
+Contributions are welcome. Suggested workflow:
+- Fork the repo and create a feature branch
+- Run the project locally following QUICK_START.md
+- Make changes and add tests (where applicable)
+- Commit and push your branch, then open a Pull Request describing the change
 
-Contains:
+If you want, I can prepare a CONTRIBUTING.md with specific rules, PR templates, and code style guidelines.
 
-- `api/` → API endpoints  
-- `services/` → RAG ingestion, embedding, search modules  
-- `database.py` → Qdrant + Neon DB connections  
-- `main.py` → FastAPI entry point  
-- `.env.template` → Environment variables you must configure  
-- Docker + Compose files for local engineering  
+Notes, TODOs & next steps
+------------------------
+- This README intentionally links to existing detailed docs (QUICK_START.md, DEPLOYMENT.md, PROJECT_STATUS.md) rather than duplicating content.
+- If you want a single-file README with full, expanded setup and commands, I can expand this draft to include exact prerequisites and commands (I can extract them from QUICK_START.md).
+- After I open the PR, I can also merge it if you want me to (but I won't merge without your explicit go-ahead).
 
-### ✅ 2.4 Frontend Book Reader UI  
-Located in:
+Contact
+-------
+Repository owner: @NAVEED261
+(You can add personal/contact details or team information here.)
 
+License
+-------
+If this project should include a license, add a LICENSE file to the repo and mention it here. If you tell me which license to use (MIT, Apache 2.0, GPLv3, etc.), I can add a LICENSE file and update the README.
 
-Features:
-
-- Read textbook chapters  
-- Clean UI  
-- Fetch content from backend  
-- Future support for dark mode, pagination, search  
-
-### ✅ 2.5 Docker Support  
-Local development:
-
-
-### ✅ 2.6 Vercel Deployment Support  
-Configuration file:
-
-
----
-
-## 📁 3. Repository Structure (Detailed)
-
-
----
-
-## ⚙️ 4. Installation & Setup (Backend + RAG + Deployment)
-
----
-
-### **Step 1 — Clone Repository**
-
-```bash
-git clone https://github.com/NAVEED261/HACKATON-1-PIAIC.git
-cd HACKATON-1-PIAIC
-cd apps/backend
-cp .env.template .env
-QDRANT_URL=
-QDRANT_API_KEY=
-OPENAI_API_KEY=
-NEON_DB_URL=
-
-pip install -r requirements.txt
-uvicorn main:app --reload
-
-python scripts/ingest_rag.py
-
-This will:
-
-Load chapters from /specs/book-chapters/
-
-Generate embeddings using OpenAI
-
-Store vectors inside Qdrant
-
-Activate semantic search
-
-7. Vercel Deployment
-Deploy with:
-vercel
-GET /health
-
-Checks backend status.
-
-GET /chapter/{id}
-
-Returns chapter content by ID.
-
-POST /query
-
-Semantic answer from textbook content.
-
-📄 11. License
-
-MIT License
-© 2025 Hafiz Naveed Uddin
-
-👨‍💻 12. Authors
-
-Hafiz Naveed Uddin — Developer & System Architect
-
-Claude AI Agent — Automated chapter generation + intelligence engine
-
-⭐ 13. Project Purpose
-
-This Hackathon project demonstrates a complete AI-native pipeline:
-
-Specification → AI Agent → RAG → Backend → UI → Deployment
+Acknowledgements
+----------------
+- PIAIC Hackathon contributors and mentors.
+- Any libraries, frameworks and resources used by the project should be credited here.
