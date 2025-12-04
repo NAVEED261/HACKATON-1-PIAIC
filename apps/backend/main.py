@@ -1,7 +1,7 @@
 import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
-from apps.backend.api.routers import ask, auth, user, chapter
+from api.routers import ask, auth, user, chapter
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
