@@ -20,3 +20,4 @@ apps/book-ui/.docusaurus/
 
 # FastAPI specific
 apps/backend/__pycache__/
+.streamlit/secrets.toml
