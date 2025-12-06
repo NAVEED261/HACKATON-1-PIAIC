@@ -1,5 +1,6 @@
 import logging
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from api.routers import ask, auth, user, chapter
 
@@ -7,6 +8,15 @@ from api.routers import ask, auth, user, chapter
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(ask.router)
 app.include_router(auth.router, prefix="/auth", tags=["auth"])

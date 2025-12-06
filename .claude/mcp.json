@@ -1,0 +1,47 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-filesystem",
+        "D:\\PIAIC HACKATON PRACTICE\\hackaton_1"
+      ]
+    },
+    "mcp": {
+  "servers": {
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "ctx7sk-d0bbf99e-97f5-4589-9dec-999d0014dfcc"]
+    }
+  }
+},
+    "github": {
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    },
+    "brave-search": {
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      }
+    },
+    "memory": {
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-memory"]
+    },
+    "postgres": {
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://localhost/hackaton_db"]
+    }
+  }
+}

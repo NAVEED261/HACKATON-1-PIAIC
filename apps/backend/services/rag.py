@@ -2,23 +2,35 @@ import os
 from openai import OpenAI
 from qdrant_client import QdrantClient, models
 
-# Initialize OpenAI client (API key will be read from OPENAI_API_KEY environment variable)
-openai_client = OpenAI()
-
-# Initialize Qdrant client
-qdrant_client = QdrantClient(
-    host=os.getenv("QDRANT_HOST"),
-    api_key=os.getenv("QDRANT_API_KEY"),
-)
-
 COLLECTION_NAME = "book_chunks"
+
+# Lazy initialization for serverless environments
+_openai_client = None
+_qdrant_client = None
+
+def get_openai_client():
+    """Lazy initialization of OpenAI client"""
+    global _openai_client
+    if _openai_client is None:
+        _openai_client = OpenAI()
+    return _openai_client
+
+def get_qdrant_client():
+    """Lazy initialization of Qdrant client"""
+    global _qdrant_client
+    if _qdrant_client is None:
+        _qdrant_client = QdrantClient(
+            host=os.getenv("QDRANT_HOST"),
+            api_key=os.getenv("QDRANT_API_KEY"),
+        )
+    return _qdrant_client
 
 def get_openai_embedding(text: str, model: str = "text-embedding-ada-002") -> list[float]:
     """
     Generates OpenAI embeddings for a given text.
     """
     try:
-        response = openai_client.embeddings.create(input=[text], model=model)
+        response = get_openai_client().embeddings.create(input=[text], model=model)
         return response.data[0].embedding
     except Exception as e:
         print(f"Error generating embedding: {e}")
@@ -42,7 +54,7 @@ def upsert_vectors_to_qdrant(chunks: list[str], embeddings: list[list[float]], m
         )
 
     try:
-        qdrant_client.upsert(
+        get_qdrant_client().upsert(
             collection_name=COLLECTION_NAME,
             wait=True,
             points=points
@@ -56,7 +68,7 @@ def search_qdrant(query_embedding: list[float], limit: int = 3) -> list[str]:
     Searches Qdrant for the most relevant document chunks.
     """
     try:
-        search_result = qdrant_client.search(
+        search_result = get_qdrant_client().search(
             collection_name=COLLECTION_NAME,
             query_vector=query_embedding,
             limit=limit,
@@ -92,7 +104,7 @@ User Question: {question}
 Answer:"""
 
     try:
-        response = openai_client.chat.completions.create(
+        response = get_openai_client().chat.completions.create(
             model="gpt-3.5-turbo",  # Or a more capable model like gpt-4
             messages=[
                 {"role": "system", "content": prompt},
